@@ -1,32 +1,71 @@
 # Bug 02 – Summer (Off-by-One Error)
 
-## Problem
+## Problem Description
 
-The original loop condition was:
+The `Summer` class calculates the sum of all elements in an integer array.
+
+However, the original implementation contains an incorrect loop condition that causes an `ArrayIndexOutOfBoundsException`.
+
+## Original Buggy Code
+
+```java
+public int sum(int[] numbers) {
+    int total = 0;
+    for (int i = 0; i <= numbers.length; i++) {
+        total += numbers[i];
+    }
+    return total;
+}
+```
+
+## Root Cause
+
+The loop condition uses:
 
 ```java
 i <= numbers.length
 ```
 
-This causes an `ArrayIndexOutOfBoundsException` because the last valid array index is `numbers.length - 1`.
+Java array indexes start from `0`, so the last valid index is `numbers.length - 1`.
 
-## Root Cause
+When `i` becomes equal to `numbers.length`, the program tries to access an invalid array index.
 
-The loop attempts to access an index equal to the array length, which is outside the valid array range.
+This results in an `ArrayIndexOutOfBoundsException`.
 
-## Fix
-
-Changed the loop condition to:
+## Corrected Code
 
 ```java
-i < numbers.length
+public int sum(int[] numbers) {
+    int total = 0;
+
+    for (int i = 0; i < numbers.length; i++) {
+        total += numbers[i];
+    }
+
+    return total;
+}
 ```
 
 ## Test Cases
 
-- `[1, 2, 3, 4]` → `10`
-- `[]` → `0`
+| Input | Expected Output |
+|---|---:|
+| `[1, 2, 3, 4]` | 10 |
+| `[]` | 0 |
+
+## How to Run Tests
+
+```bash
+mvn test -Dtest=SummerTest
+```
 
 ## Key Learning
 
-Java array indexes start at `0`. Always use `i < array.length` when traversing an array to avoid off-by-one errors.
+- Understand zero-based array indexing.
+- Avoid off-by-one errors in loops.
+- Use `i < array.length` for standard array traversal.
+- An empty array produces a sum of `0`.
+
+## Bug Status
+
+Fixed and verified with the provided JUnit test cases.
